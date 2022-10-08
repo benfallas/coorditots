@@ -8,10 +8,12 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/rendering.dart';
 import 'firebase_options.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:just_audio/just_audio.dart';
+
 
 FirebaseDatabase database = FirebaseDatabase.instance;
 DatabaseReference ref = FirebaseDatabase.instance.ref();
-
+final player = AudioPlayer();
 
 void main() async {
 
@@ -69,15 +71,17 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-
-
-
 class PhonicsGrid extends StatefulWidget {
 
   const PhonicsGrid({super.key});
 
   @override
   State<PhonicsGrid> createState() => PhonicsGridState();
+}
+
+void loadVoiceUrl(String voiceUrl, BuildContext context) async {
+  await player.setUrl(voiceUrl);
+  player.play();
 }
 
 
@@ -115,11 +119,21 @@ class PhonicsGridState extends State<PhonicsGrid> {
                 itemBuilder: (BuildContext context, int index) {
                   return     GestureDetector(
                     onTap: (){
-                      print("TAPPED");
-                        showModalBottomSheet(context: context, builder: (context) {
+                        showModalBottomSheet(
+                          context: context, 
+                          isDismissible: false,
+                          builder: (context) {
+                        
+                            loadVoiceUrl(phonics[index].voiceUrl!, context);
+                            player.playerStateStream.listen((state) {
+                              switch(state.processingState) {
+                                case ProcessingState.completed:
+                                  Navigator.pop(context);
+                              }
+                            });
+
                           return ListView(
                             children: [
-                             
                               Container(
                                 child: 
                                 Padding(
@@ -142,11 +156,8 @@ class PhonicsGridState extends State<PhonicsGrid> {
                                     phonics[index].subtitle!,
                                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500,color: Colors.black),
                                   ),
-
-                                )
-                                 
+                                ) 
                               )
-                              
                             ],
                           );
                         });
