@@ -95,7 +95,6 @@ class PhonicsGridState extends State<PhonicsGrid> {
       builder: (context, snapshot) {
             if (snapshot.hasData) {
               List<dynamic> map = snapshot.data!.snapshot.value as List<dynamic>;
-              print(map);
 
               phonics.clear();
 
@@ -107,31 +106,57 @@ class PhonicsGridState extends State<PhonicsGrid> {
                 physics: NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 40,
-                    crossAxisSpacing: 24,
-                    childAspectRatio: 0.75),
+                    crossAxisCount: 4,
+                    mainAxisSpacing: 5,
+                    crossAxisSpacing: 5,
+                    childAspectRatio: 1),
                 itemCount: phonics.length,
                 padding: EdgeInsets.all(2.0),
                 itemBuilder: (BuildContext context, int index) {
                   return     GestureDetector(
                     onTap: (){
-                        print("TAPPED");
+                      print("TAPPED");
+                        showModalBottomSheet(context: context, builder: (context) {
+                          return ListView(
+                            children: [
+                             
+                              Container(
+                                child: 
+                                Padding(
+                                  padding: EdgeInsets.all(20),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                        image: NetworkImage(phonics[index].imageUrl!),
+                                        fit: BoxFit.contain),
+                                    ),
+                                  ),
+                                ),
+                                height: 300,
+                              ),
+                              Center(
+                                
+                                child: Padding(
+                                  padding: EdgeInsets.all(20),
+                                  child: Text(
+                                    phonics[index].subtitle!,
+                                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500,color: Colors.black),
+                                  ),
+
+                                )
+                                 
+                              )
+                              
+                            ],
+                          );
+                        });
                     },
                     child: Padding(
                       padding: EdgeInsets.all(5),
                       child: Container(
-
-                        width: 100,
-                        height: 150,
-                        decoration: BoxDecoration(
-
+                        decoration: const BoxDecoration(
                           shape: BoxShape.rectangle,
-                          borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                          image: DecorationImage(
-                            image: NetworkImage(phonics[index].imageUrl!),
-                            fit: BoxFit.cover,
-                          ),
+                          borderRadius: BorderRadius.all(Radius.circular(15.0)),       
                         ),
                         child:  Padding(
                           padding: EdgeInsets.all(0),
@@ -140,29 +165,17 @@ class PhonicsGridState extends State<PhonicsGrid> {
                             decoration: BoxDecoration(
                               shape: BoxShape.rectangle,
                               borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                              gradient: new LinearGradient(
-                                  colors: [
-                                    Colors.black,
-                                    const Color(0x19000000),
-                                  ],
-                                  begin: const FractionalOffset(0.0, 1.0),
-                                  end: const FractionalOffset(0.0, 0.0),
-                                  stops: [0.0, 1.0],
-                                  tileMode: TileMode.clamp),
+                              color: Colors.lightBlue,
                             ),
                             child: Padding(
                               padding: EdgeInsets.all(10),
                               child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.end,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Text(
                                     phonics[index].title!,
-                                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500,color: Colors.white),
-                                  ),
-                                  Text('Rs. ${phonics[index].subtitle }'
-                                    ,
-                                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w200,color: Colors.white),
+                                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500,color: Colors.black),
                                   ),
                                 ],
                               ),
